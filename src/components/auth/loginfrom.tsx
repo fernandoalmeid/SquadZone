@@ -1,4 +1,5 @@
 import { FormEvent, useState } from "react";
+import SignupForm from "../auth/signupfrom";
 
 function MailIcon() {
   return (
@@ -25,6 +26,23 @@ function LockIcon() {
 function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showSignup, setShowSignup] = useState(false);
+
+  if (showSignup) {
+    return (
+      <div className="login-card">
+        <SignupForm />
+
+        <button
+          type="button"
+          className="login-btn"
+          onClick={() => setShowSignup(false)}
+        >
+          Back to Login
+        </button>
+      </div>
+    );
+  }
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -77,6 +95,14 @@ function LoginForm() {
 
         <button type="submit" className="login-btn">
           Log in
+        </button>
+
+        <button
+          type="button"
+          className="login-btn"
+          onClick={() => setShowSignup(true)}
+        >
+          Sign up
         </button>
       </form>
     </div>
