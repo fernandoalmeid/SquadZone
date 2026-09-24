@@ -43,6 +43,7 @@ function LoginForm() {
       <form onSubmit={handleSubmit}>
         <label className="field">
           <span className="field-label">Email</span>
+
           <span className="input-wrap">
             <input
               type="email"
@@ -52,12 +53,14 @@ function LoginForm() {
               autoComplete="email"
               required
             />
+
             <MailIcon />
           </span>
         </label>
 
         <label className="field">
           <span className="field-label">Password</span>
+
           <span className="input-wrap">
             <input
               type="password"
@@ -67,6 +70,7 @@ function LoginForm() {
               autoComplete="current-password"
               required
             />
+
             <LockIcon />
           </span>
         </label>
