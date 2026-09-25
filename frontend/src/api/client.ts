@@ -31,6 +31,13 @@ export async function apiRequest<T>(path: string, options: RequestInit = {}): Pr
     throw new ApiError("Can't reach the server. Check that the backend is running.", 0);
   }
 
+<<<<<<< HEAD
+  if (response.status === 204) {
+    return undefined as T;
+  }
+
+=======
+>>>>>>> d70a53786ab6670840b679bb743e3f4a9c88c523
   const data = await response.json().catch(() => null);
 
   if (!response.ok) {
