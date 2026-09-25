@@ -32,12 +32,18 @@ export async function apiRequest<T>(path: string, options: RequestInit = {}): Pr
   }
 
 <<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 884ce0ebbacabe8dd580de6863d4ac9f30d9ed1f
   if (response.status === 204) {
     return undefined as T;
   }
 
+<<<<<<< HEAD
+=======
 =======
 >>>>>>> d70a53786ab6670840b679bb743e3f4a9c88c523
+>>>>>>> 884ce0ebbacabe8dd580de6863d4ac9f30d9ed1f
   const data = await response.json().catch(() => null);
 
   if (!response.ok) {

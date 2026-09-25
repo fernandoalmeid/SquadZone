@@ -1,6 +1,9 @@
 # SquadZone
 
 <<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 884ce0ebbacabe8dd580de6863d4ac9f30d9ed1f
 App de comunicação ao estilo Discord, com o tema roxo do SquadZone.
 
 ## Funcionalidades
@@ -16,23 +19,32 @@ App de comunicação ao estilo Discord, com o tema roxo do SquadZone.
 
 ## Estrutura
 
+<<<<<<< HEAD
+=======
 =======
 ## Estrutura
 
 >>>>>>> d70a53786ab6670840b679bb743e3f4a9c88c523
+>>>>>>> 884ce0ebbacabe8dd580de6863d4ac9f30d9ed1f
 ```
 SquadZone/
 ├── backend/
 │   ├── src/
 │   │   ├── middleware/auth.ts
 <<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 884ce0ebbacabe8dd580de6863d4ac9f30d9ed1f
 │   │   ├── realtime/socket.ts
 │   │   ├── routes/ (auth, friends, servers, channels)
 │   │   ├── services/permissions.ts
 │   │   ├── utils/http.ts
+<<<<<<< HEAD
+=======
 =======
 │   │   ├── routes/auth.ts
 >>>>>>> d70a53786ab6670840b679bb743e3f4a9c88c523
+>>>>>>> 884ce0ebbacabe8dd580de6863d4ac9f30d9ed1f
 │   │   ├── config.ts
 │   │   ├── db.ts
 │   │   └── index.ts
@@ -40,6 +52,9 @@ SquadZone/
 │   └── .env.example
 └── frontend/
 <<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 884ce0ebbacabe8dd580de6863d4ac9f30d9ed1f
     ├── public/
     └── src/
         ├── api/
@@ -50,6 +65,8 @@ SquadZone/
         ├── styles/
         ├── types/
         ├── utils/
+<<<<<<< HEAD
+=======
 =======
     ├── public/favicon.svg
     └── src/
@@ -64,6 +81,7 @@ SquadZone/
         ├── styles/
         ├── types/
 >>>>>>> d70a53786ab6670840b679bb743e3f4a9c88c523
+>>>>>>> 884ce0ebbacabe8dd580de6863d4ac9f30d9ed1f
         ├── App.tsx
         └── main.tsx
 ```
@@ -73,8 +91,12 @@ SquadZone/
 <<<<<<< HEAD
 1. Criar a base de dados no PostgreSQL (por exemplo no pgAdmin):
 =======
+<<<<<<< HEAD
+1. Criar a base de dados no PostgreSQL (por exemplo no pgAdmin):
+=======
 1. Criar a base de dados no PostgreSQL:
 >>>>>>> d70a53786ab6670840b679bb743e3f4a9c88c523
+>>>>>>> 884ce0ebbacabe8dd580de6863d4ac9f30d9ed1f
 
 ```
 CREATE DATABASE squadzone;
@@ -84,7 +106,12 @@ CREATE DATABASE squadzone;
 As tabelas são criadas automaticamente quando o backend arranca.
 
 =======
+<<<<<<< HEAD
+As tabelas são criadas automaticamente quando o backend arranca.
+
+=======
 >>>>>>> d70a53786ab6670840b679bb743e3f4a9c88c523
+>>>>>>> 884ce0ebbacabe8dd580de6863d4ac9f30d9ed1f
 2. Backend:
 
 ```
@@ -92,8 +119,12 @@ cd backend
 <<<<<<< HEAD
 copy .env.example .env
 =======
+<<<<<<< HEAD
+copy .env.example .env
+=======
 cp .env.example .env
 >>>>>>> d70a53786ab6670840b679bb743e3f4a9c88c523
+>>>>>>> 884ce0ebbacabe8dd580de6863d4ac9f30d9ed1f
 npm install
 npm run dev
 ```
@@ -101,8 +132,12 @@ npm run dev
 <<<<<<< HEAD
 No `.env`, mete a password do teu utilizador `postgres` no `DATABASE_URL` e muda o `JWT_SECRET`.
 =======
+<<<<<<< HEAD
+No `.env`, mete a password do teu utilizador `postgres` no `DATABASE_URL` e muda o `JWT_SECRET`.
+=======
 Mudar `YOUR_PASSWORD` e `JWT_SECRET` no `.env`. A tabela `users` é criada automaticamente ao arrancar.
 >>>>>>> d70a53786ab6670840b679bb743e3f4a9c88c523
+>>>>>>> 884ce0ebbacabe8dd580de6863d4ac9f30d9ed1f
 
 3. Frontend (noutro terminal):
 
@@ -117,13 +152,22 @@ Abre http://localhost:5173.
 
 Para testar amigos e voz com duas contas, usa dois browsers diferentes ou uma janela normal e outra anónima.
 =======
+<<<<<<< HEAD
+Abre http://localhost:5173.
+
+Para testar amigos e voz com duas contas, usa dois browsers diferentes ou uma janela normal e outra anónima.
+=======
 Abrir http://localhost:5173
 >>>>>>> d70a53786ab6670840b679bb743e3f4a9c88c523
+>>>>>>> 884ce0ebbacabe8dd580de6863d4ac9f30d9ed1f
 
 ## API
 
 | Método | Rota | Descrição |
 <<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 884ce0ebbacabe8dd580de6863d4ac9f30d9ed1f
 |---|---|---|
 | POST | /api/auth/register | Criar conta |
 | POST | /api/auth/login | Entrar |
@@ -152,6 +196,8 @@ O tempo real (presença, mensagens, estado da voz e sinalização WebRTC) usa So
 
 - A voz é peer-to-peer. Funciona bem em localhost e na mesma rede. Entre redes diferentes pela internet pode ser preciso um servidor TURN.
 - Mensagens privadas (DMs) ainda não estão feitas.
+<<<<<<< HEAD
+=======
 =======
 | --- | --- | --- |
 | GET | /api/health | Estado do servidor |
@@ -159,3 +205,4 @@ O tempo real (presença, mensagens, estado da voz e sinalização WebRTC) usa So
 | POST | /api/auth/login | Login (email, password) |
 | GET | /api/auth/me | Utilizador atual (Bearer token) |
 >>>>>>> d70a53786ab6670840b679bb743e3f4a9c88c523
+>>>>>>> 884ce0ebbacabe8dd580de6863d4ac9f30d9ed1f

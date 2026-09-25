@@ -9,8 +9,12 @@ function GuestRoute() {
 <<<<<<< HEAD
   if (user) return <Navigate to="/friends" replace />;
 =======
+<<<<<<< HEAD
+  if (user) return <Navigate to="/friends" replace />;
+=======
   if (user) return <Navigate to="/" replace />;
 >>>>>>> d70a53786ab6670840b679bb743e3f4a9c88c523
+>>>>>>> 884ce0ebbacabe8dd580de6863d4ac9f30d9ed1f
 
   return <Outlet />;
 }

@@ -1,4 +1,23 @@
 {
+<<<<<<< HEAD
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "target": "es2023",
+    "lib": ["es2023"],
+    "types": ["node"],
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "verbatimModuleSyntax": true,
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "skipLibCheck": true,
+    "sourceMap": true
+  },
+  "include": ["src"]
+=======
   // Visit https://aka.ms/tsconfig to read more about this file
   "compilerOptions": {
     // File Layout
@@ -41,4 +60,5 @@
     "moduleDetection": "force",
     "skipLibCheck": true,
   }
+>>>>>>> 884ce0ebbacabe8dd580de6863d4ac9f30d9ed1f
 }
