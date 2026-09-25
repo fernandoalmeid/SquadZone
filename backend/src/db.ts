@@ -1,10 +1,18 @@
+<<<<<<< HEAD
 import { readFile } from "node:fs/promises";
 import pg from "pg";
 import { config } from "./config.js";
+=======
+import pg from "pg";
+import dotenv from "dotenv";
+
+dotenv.config();
+>>>>>>> 884ce0ebbacabe8dd580de6863d4ac9f30d9ed1f
 
 const { Pool } = pg;
 
 export const pool = new Pool({
+<<<<<<< HEAD
   connectionString: config.databaseUrl,
 });
 
@@ -28,3 +36,7 @@ export async function withTransaction<T>(work: (client: pg.PoolClient) => Promis
     client.release();
   }
 }
+=======
+  connectionString: process.env.DATABASE_URL,
+});
+>>>>>>> 884ce0ebbacabe8dd580de6863d4ac9f30d9ed1f

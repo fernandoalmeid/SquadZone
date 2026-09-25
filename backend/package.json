@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "name": "squadzone-backend",
   "version": "1.0.0",
   "private": true,
@@ -9,14 +10,30 @@
     "start": "node dist/index.js",
     "typecheck": "tsc --noEmit"
   },
+=======
+  "name": "backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+>>>>>>> 884ce0ebbacabe8dd580de6863d4ac9f30d9ed1f
   "dependencies": {
     "bcrypt": "^6.0.0",
     "cors": "^2.8.6",
     "dotenv": "^18.0.3",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
+<<<<<<< HEAD
     "pg": "^8.23.0",
     "socket.io": "^4.8.3"
+=======
+    "pg": "^8.23.0"
+>>>>>>> 884ce0ebbacabe8dd580de6863d4ac9f30d9ed1f
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",

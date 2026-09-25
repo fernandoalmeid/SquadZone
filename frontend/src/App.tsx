@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { Navigate, Route, Routes } from "react-router-dom";
 import AppLayout from "./components/app/AppLayout.tsx";
 import GuestRoute from "./components/routes/GuestRoute.tsx";
@@ -26,3 +27,13 @@ function App() {
 }
 
 export default App;
+=======
+import Login from "./pages/login";
+import "./App.css";
+
+function App() {
+  return <Login />;
+}
+
+export default App;
+>>>>>>> 884ce0ebbacabe8dd580de6863d4ac9f30d9ed1f

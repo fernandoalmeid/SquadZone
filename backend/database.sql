@@ -1,9 +1,14 @@
+<<<<<<< HEAD
 CREATE TABLE IF NOT EXISTS users (
+=======
+CREATE TABLE users (
+>>>>>>> 884ce0ebbacabe8dd580de6863d4ac9f30d9ed1f
     id SERIAL PRIMARY KEY,
     email VARCHAR(255) UNIQUE NOT NULL,
     username VARCHAR(50) UNIQUE NOT NULL,
     password_hash TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+<<<<<<< HEAD
 );
 
 CREATE UNIQUE INDEX IF NOT EXISTS users_username_lower_idx ON users (LOWER(username));
@@ -83,3 +88,6 @@ CREATE TABLE IF NOT EXISTS messages (
 );
 
 CREATE INDEX IF NOT EXISTS messages_channel_idx ON messages (channel_id, id DESC);
+=======
+);
+>>>>>>> 884ce0ebbacabe8dd580de6863d4ac9f30d9ed1f
