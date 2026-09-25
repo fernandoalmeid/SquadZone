@@ -1,32 +1,69 @@
-# React + TypeScript + Vite
+# SquadZone
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+## Estrutura
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```
+SquadZone/
+├── backend/
+│   ├── src/
+│   │   ├── middleware/auth.ts
+│   │   ├── routes/auth.ts
+│   │   ├── config.ts
+│   │   ├── db.ts
+│   │   └── index.ts
+│   ├── database.sql
+│   └── .env.example
+└── frontend/
+    ├── public/favicon.svg
+    └── src/
+        ├── api/
+        ├── components/
+        │   ├── auth/
+        │   ├── layout/
+        │   └── routes/
+        ├── context/
+        ├── hooks/
+        ├── pages/
+        ├── styles/
+        ├── types/
+        ├── App.tsx
+        └── main.tsx
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+## Como correr
+
+1. Criar a base de dados no PostgreSQL:
+
+```
+CREATE DATABASE squadzone;
+```
+
+2. Backend:
+
+```
+cd backend
+cp .env.example .env
+npm install
+npm run dev
+```
+
+Mudar `YOUR_PASSWORD` e `JWT_SECRET` no `.env`. A tabela `users` é criada automaticamente ao arrancar.
+
+3. Frontend (noutro terminal):
+
+```
+cd frontend
+npm install
+npm run dev
+```
+
+Abrir http://localhost:5173
+
+## API
+
+| Método | Rota | Descrição |
+| --- | --- | --- |
+| GET | /api/health | Estado do servidor |
+| POST | /api/auth/register | Criar conta (email, username, password) |
+| POST | /api/auth/login | Login (email, password) |
+| GET | /api/auth/me | Utilizador atual (Bearer token) |
