@@ -1,6 +1,7 @@
 export interface BasicUser {
   id: number;
   username: string;
+  avatar?: string | null;
 }
 
 export interface FriendsData {
@@ -25,6 +26,9 @@ export interface Role {
 export interface Member {
   id: number;
   username: string;
+  avatar?: string | null;
+  banner?: string | null;
+  bio?: string;
   roleIds: number[];
   isOwner: boolean;
 }

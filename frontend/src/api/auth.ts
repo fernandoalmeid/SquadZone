@@ -1,4 +1,4 @@
-import type { AuthResponse, LoginData, SignupData, User } from "../types/auth.ts";
+import type { AuthResponse, LoginData, SignupData, UpdateProfileData, User } from "../types/auth.ts";
 import { apiRequest } from "./client.ts";
 
 export function login(data: LoginData) {
@@ -17,4 +17,11 @@ export function signup(data: SignupData) {
 
 export function getCurrentUser() {
   return apiRequest<{ user: User }>("/auth/me");
+}
+
+export function updateProfile(data: UpdateProfileData) {
+  return apiRequest<{ user: User }>("/auth/me", {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  });
 }
