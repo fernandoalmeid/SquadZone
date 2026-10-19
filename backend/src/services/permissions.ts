@@ -12,7 +12,7 @@ export interface MemberContext {
 export interface CategoryRow {
   id: number;
   name: string;
-  is_private: boolean;
+  is_private: boolean | number;
   position: number;
   role_ids: number[];
 }
@@ -24,6 +24,20 @@ export interface ChannelRow {
   name: string;
   type: "text" | "voice";
   position: number;
+}
+
+function parseIdList(value: unknown): number[] {
+  if (value == null || value === "") return [];
+  if (Array.isArray(value)) {
+    return value.map(Number).filter((n) => Number.isFinite(n));
+  }
+  if (typeof value === "string") {
+    return value
+      .split(",")
+      .map((s) => Number(s.trim()))
+      .filter((n) => Number.isFinite(n));
+  }
+  return [];
 }
 
 export async function getMemberContext(
@@ -42,7 +56,7 @@ export async function getMemberContext(
     return null;
   }
 
-  const roles = await pool.query<{ id: number; is_admin: boolean }>(
+  const roles = await pool.query<{ id: number; is_admin: number }>(
     `SELECT r.id, r.is_admin FROM member_roles mr
      JOIN roles r ON r.id = mr.role_id
      WHERE r.server_id = $1 AND mr.user_id = $2`,
@@ -53,7 +67,7 @@ export async function getMemberContext(
     userId,
     serverId,
     isOwner: row.owner_id === userId,
-    isAdmin: roles.rows.some((role) => role.is_admin),
+    isAdmin: roles.rows.some((role) => !!role.is_admin),
     roleIds: new Set(roles.rows.map((role) => role.id)),
   };
 }
@@ -90,9 +104,15 @@ export function canSeeCategory(
 }
 
 export async function loadCategories(serverId: number): Promise<CategoryRow[]> {
-  const result = await pool.query<CategoryRow>(
+  const result = await pool.query<{
+    id: number;
+    name: string;
+    is_private: number;
+    position: number;
+    role_ids: string | null;
+  }>(
     `SELECT c.id, c.name, c.is_private, c.position,
-            COALESCE(array_agg(cr.role_id) FILTER (WHERE cr.role_id IS NOT NULL), '{}') AS role_ids
+            GROUP_CONCAT(cr.role_id) AS role_ids
      FROM categories c
      LEFT JOIN category_roles cr ON cr.category_id = c.id
      WHERE c.server_id = $1
@@ -100,7 +120,14 @@ export async function loadCategories(serverId: number): Promise<CategoryRow[]> {
      ORDER BY c.position, c.id`,
     [serverId],
   );
-  return result.rows;
+
+  return result.rows.map((row) => ({
+    id: row.id,
+    name: row.name,
+    is_private: !!row.is_private,
+    position: row.position,
+    role_ids: parseIdList(row.role_ids),
+  }));
 }
 
 export async function loadChannels(serverId: number): Promise<ChannelRow[]> {
@@ -116,16 +143,23 @@ export async function getChannelAccess(
   channelId: number,
   userId: number,
 ): Promise<{ channel: ChannelRow; context: MemberContext } | null> {
-  const result = await pool.query<
-    ChannelRow & { is_private: boolean | null; role_ids: number[] }
-  >(
+  const result = await pool.query<{
+    id: number;
+    server_id: number;
+    category_id: number | null;
+    name: string;
+    type: "text" | "voice";
+    position: number;
+    is_private: number | null;
+    role_ids: string | null;
+  }>(
     `SELECT ch.id, ch.server_id, ch.category_id, ch.name, ch.type, ch.position, c.is_private,
-            COALESCE(array_agg(cr.role_id) FILTER (WHERE cr.role_id IS NOT NULL), '{}') AS role_ids
+            GROUP_CONCAT(cr.role_id) AS role_ids
      FROM channels ch
      LEFT JOIN categories c ON c.id = ch.category_id
      LEFT JOIN category_roles cr ON cr.category_id = c.id
      WHERE ch.id = $1
-     GROUP BY ch.id, c.id`,
+     GROUP BY ch.id`,
     [channelId],
   );
 
@@ -139,7 +173,13 @@ export async function getChannelAccess(
     return null;
   }
 
-  if (row.category_id !== null && !canSeeCategory(context, { is_private: !!row.is_private, role_ids: row.role_ids })) {
+  if (
+    row.category_id !== null &&
+    !canSeeCategory(context, {
+      is_private: !!row.is_private,
+      role_ids: parseIdList(row.role_ids),
+    })
+  ) {
     return null;
   }
 
