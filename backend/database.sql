@@ -1,11 +1,13 @@
--- Schema do SquadZone (o backend também cria isto sozinho ao arrancar)
+-- Schema do SquadZone (SQLite) — o backend cria isto sozinho ao arrancar
+
+PRAGMA foreign_keys = ON;
 
 CREATE TABLE IF NOT EXISTS users (
-    id SERIAL PRIMARY KEY,
-    email VARCHAR(255) UNIQUE NOT NULL,
-    username VARCHAR(50) UNIQUE NOT NULL,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    email TEXT NOT NULL UNIQUE,
+    username TEXT NOT NULL UNIQUE,
     password_hash TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
 CREATE UNIQUE INDEX IF NOT EXISTS users_username_lower_idx ON users (LOWER(username));
@@ -13,33 +15,33 @@ CREATE UNIQUE INDEX IF NOT EXISTS users_username_lower_idx ON users (LOWER(usern
 CREATE TABLE IF NOT EXISTS friendships (
     requester_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     addressee_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    status VARCHAR(10) NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'accepted')),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'accepted')),
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
     PRIMARY KEY (requester_id, addressee_id),
     CHECK (requester_id <> addressee_id)
 );
 
 CREATE TABLE IF NOT EXISTS servers (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
     owner_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    invite_code VARCHAR(32) UNIQUE NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    invite_code TEXT NOT NULL UNIQUE,
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
 CREATE TABLE IF NOT EXISTS server_members (
     server_id INTEGER NOT NULL REFERENCES servers(id) ON DELETE CASCADE,
     user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    joined_at TEXT NOT NULL DEFAULT (datetime('now')),
     PRIMARY KEY (server_id, user_id)
 );
 
 CREATE TABLE IF NOT EXISTS roles (
-    id SERIAL PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     server_id INTEGER NOT NULL REFERENCES servers(id) ON DELETE CASCADE,
-    name VARCHAR(50) NOT NULL,
-    color VARCHAR(7) NOT NULL DEFAULT '#8b7fd6',
-    is_admin BOOLEAN NOT NULL DEFAULT FALSE
+    name TEXT NOT NULL,
+    color TEXT NOT NULL DEFAULT '#8b7fd6',
+    is_admin INTEGER NOT NULL DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS member_roles (
@@ -49,10 +51,10 @@ CREATE TABLE IF NOT EXISTS member_roles (
 );
 
 CREATE TABLE IF NOT EXISTS categories (
-    id SERIAL PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     server_id INTEGER NOT NULL REFERENCES servers(id) ON DELETE CASCADE,
-    name VARCHAR(100) NOT NULL,
-    is_private BOOLEAN NOT NULL DEFAULT FALSE,
+    name TEXT NOT NULL,
+    is_private INTEGER NOT NULL DEFAULT 0,
     position INTEGER NOT NULL DEFAULT 0
 );
 
@@ -63,20 +65,20 @@ CREATE TABLE IF NOT EXISTS category_roles (
 );
 
 CREATE TABLE IF NOT EXISTS channels (
-    id SERIAL PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     server_id INTEGER NOT NULL REFERENCES servers(id) ON DELETE CASCADE,
     category_id INTEGER REFERENCES categories(id) ON DELETE SET NULL,
-    name VARCHAR(100) NOT NULL,
-    type VARCHAR(10) NOT NULL CHECK (type IN ('text', 'voice')),
+    name TEXT NOT NULL,
+    type TEXT NOT NULL CHECK (type IN ('text', 'voice')),
     position INTEGER NOT NULL DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS messages (
-    id SERIAL PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     channel_id INTEGER NOT NULL REFERENCES channels(id) ON DELETE CASCADE,
     user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     content TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
 CREATE INDEX IF NOT EXISTS messages_channel_idx ON messages (channel_id, id);
