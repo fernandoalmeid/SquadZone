@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import * as authApi from "../api/auth.ts";
 import { tokenStorage } from "../api/client.ts";
-import type { LoginData, SignupData, User } from "../types/auth.ts";
+import type { LoginData, SignupData, UpdateProfileData, User } from "../types/auth.ts";
 import { AuthContext } from "./AuthContext.ts";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -49,9 +49,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   }, []);
 
+  const updateUser = useCallback(async (data: UpdateProfileData) => {
+    const result = await authApi.updateProfile(data);
+    setUser(result.user);
+    return result.user;
+  }, []);
+
   const value = useMemo(
-    () => ({ user, loading, login, signup, logout }),
-    [user, loading, login, signup, logout],
+    () => ({ user, loading, login, signup, logout, updateUser }),
+    [user, loading, login, signup, logout, updateUser],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

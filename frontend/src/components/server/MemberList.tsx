@@ -23,6 +23,7 @@ function MemberList({ members, roles }: { members: Member[]; roles: Role[] }) {
                 name={member.username}
                 size={32}
                 status={isOnline ? "online" : "offline"}
+                src={member.avatar}
               />
               <span style={{ color: memberColor(member, roles) }}>{member.username}</span>
               {member.isOwner && (

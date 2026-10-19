@@ -5,20 +5,21 @@ interface AvatarProps {
   name: string;
   size?: number;
   status?: "online" | "offline";
+  src?: string | null;
 }
 
-function Avatar({ id, name, size = 32, status }: AvatarProps) {
+function Avatar({ id, name, size = 32, status, src }: AvatarProps) {
   return (
     <span
-      className="avatar"
+      className={`avatar${src ? " has-image" : ""}`}
       style={{
         width: size,
         height: size,
         fontSize: size * 0.42,
-        background: COLORS[id % COLORS.length],
+        background: src ? "transparent" : COLORS[id % COLORS.length],
       }}
     >
-      {name.charAt(0).toUpperCase()}
+      {src ? <img src={src} alt="" /> : name.charAt(0).toUpperCase()}
       {status && <span className={`status-dot ${status}`} />}
     </span>
   );

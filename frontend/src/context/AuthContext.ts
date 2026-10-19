@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import type { LoginData, SignupData, User } from "../types/auth.ts";
+import type { LoginData, SignupData, UpdateProfileData, User } from "../types/auth.ts";
 
 export interface AuthContextValue {
   user: User | null;
@@ -7,6 +7,7 @@ export interface AuthContextValue {
   login: (data: LoginData) => Promise<void>;
   signup: (data: SignupData) => Promise<void>;
   logout: () => void;
+  updateUser: (data: UpdateProfileData) => Promise<User>;
 }
 
 export const AuthContext = createContext<AuthContextValue | null>(null);
