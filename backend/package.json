@@ -1,39 +1,24 @@
 {
-<<<<<<< HEAD
-  "name": "squadzone-backend",
-  "version": "1.0.0",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "build": "tsc",
-    "start": "node dist/index.js",
-    "typecheck": "tsc --noEmit"
-  },
-=======
   "name": "backend",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "src/index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "tsx watch src/index.ts",
+    "start": "tsx src/index.ts",
+    "typecheck": "tsc --noEmit"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
->>>>>>> 884ce0ebbacabe8dd580de6863d4ac9f30d9ed1f
   "dependencies": {
     "bcrypt": "^6.0.0",
     "cors": "^2.8.6",
     "dotenv": "^18.0.3",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
-<<<<<<< HEAD
     "pg": "^8.23.0",
     "socket.io": "^4.8.3"
-=======
-    "pg": "^8.23.0"
->>>>>>> 884ce0ebbacabe8dd580de6863d4ac9f30d9ed1f
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
@@ -44,5 +29,6 @@
     "@types/pg": "^8.23.1",
     "tsx": "^4.23.15",
     "typescript": "^7.0.2"
-  }
+  },
+  "type": "module"
 }

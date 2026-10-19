@@ -1,27 +1,20 @@
-<<<<<<< HEAD
 import { readFile } from "node:fs/promises";
 import pg from "pg";
 import { config } from "./config.js";
-=======
-import pg from "pg";
-import dotenv from "dotenv";
-
-dotenv.config();
->>>>>>> 884ce0ebbacabe8dd580de6863d4ac9f30d9ed1f
 
 const { Pool } = pg;
 
 export const pool = new Pool({
-<<<<<<< HEAD
   connectionString: config.databaseUrl,
 });
 
-export async function initDatabase(): Promise<void> {
-  const schemaPath = new URL("../database.sql", import.meta.url);
-  const schema = await readFile(schemaPath, "utf8");
+// Cria as tabelas que faltarem (database.sql usa IF NOT EXISTS, por isso pode correr sempre)
+export async function initDatabase() {
+  const schema = await readFile(new URL("../database.sql", import.meta.url), "utf8");
   await pool.query(schema);
 }
 
+// Corre várias queries numa transação: ou correm todas, ou nenhuma
 export async function withTransaction<T>(work: (client: pg.PoolClient) => Promise<T>): Promise<T> {
   const client = await pool.connect();
   try {
@@ -36,7 +29,3 @@ export async function withTransaction<T>(work: (client: pg.PoolClient) => Promis
     client.release();
   }
 }
-=======
-  connectionString: process.env.DATABASE_URL,
-});
->>>>>>> 884ce0ebbacabe8dd580de6863d4ac9f30d9ed1f
