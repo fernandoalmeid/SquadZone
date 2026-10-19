@@ -80,7 +80,18 @@ export async function withTransaction<T>(work: (client: TxClient) => Promise<T>)
   }
 }
 
+function ensureColumn(table: string, column: string, definition: string) {
+  const info = sqlite.prepare(`PRAGMA table_info(${table})`).all() as { name: string }[];
+  if (!info.some((col) => col.name === column)) {
+    sqlite.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${definition}`);
+  }
+}
+
 export async function initDatabase() {
   const schema = await readFile(new URL("../database.sql", import.meta.url), "utf8");
   sqlite.exec(schema);
+  // Migrate existing databases created before profile fields existed
+  ensureColumn("users", "avatar", "TEXT");
+  ensureColumn("users", "banner", "TEXT");
+  ensureColumn("users", "bio", "TEXT NOT NULL DEFAULT ''");
 }
