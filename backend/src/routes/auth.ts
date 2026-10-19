@@ -8,23 +8,56 @@ interface UserRow {
   email: string;
   username: string;
   password_hash: string;
-  created_at: Date;
+  avatar: string | null;
+  banner: string | null;
+  bio: string | null;
+  created_at: Date | string;
 }
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const USERNAME_REGEX = /^[a-zA-Z0-9_]{3,50}$/;
+const IMAGE_DATA_URL = /^data:image\/(png|jpe?g|gif|webp);base64,/i;
+const MAX_AVATAR_CHARS = 2_500_000; // ~1.8MB binary
+const MAX_BANNER_CHARS = 5_000_000; // ~3.5MB binary
+const MAX_BIO = 190;
 
 function publicUser(user: UserRow) {
   return {
     id: user.id,
     email: user.email,
     username: user.username,
+    avatar: user.avatar ?? null,
+    banner: user.banner ?? null,
+    bio: user.bio ?? "",
     createdAt: user.created_at,
   };
 }
 
 function asString(value: unknown): string {
   return typeof value === "string" ? value.trim() : "";
+}
+
+function parseOptionalImage(
+  value: unknown,
+  field: string,
+  maxChars: number,
+): string | null | undefined {
+  // undefined = leave unchanged; null or "" = clear; string = set
+  if (value === undefined) return undefined;
+  if (value === null || value === "") return null;
+  if (typeof value !== "string") {
+    throw Object.assign(new Error(`${field} must be an image`), { status: 400 });
+  }
+  if (!IMAGE_DATA_URL.test(value)) {
+    throw Object.assign(
+      new Error(`${field} must be a PNG, JPEG, GIF or WebP image`),
+      { status: 400 },
+    );
+  }
+  if (value.length > maxChars) {
+    throw Object.assign(new Error(`${field} is too large`), { status: 400 });
+  }
+  return value;
 }
 
 export const authRouter = Router();
@@ -109,4 +142,72 @@ authRouter.get("/me", requireAuth, async (_req, res) => {
   }
 
   res.json({ user: publicUser(user) });
+});
+
+authRouter.patch("/me", requireAuth, async (req, res) => {
+  try {
+    const result = await pool.query<UserRow>("SELECT * FROM users WHERE id = $1", [
+      res.locals.userId,
+    ]);
+    const user = result.rows[0];
+    if (!user) {
+      res.status(404).json({ error: "User not found" });
+      return;
+    }
+
+    let username = user.username;
+    if (req.body?.username !== undefined) {
+      const next = asString(req.body.username);
+      if (!USERNAME_REGEX.test(next)) {
+        res.status(400).json({
+          error: "Username must be 3-50 characters (letters, numbers or _)",
+        });
+        return;
+      }
+      if (next.toLowerCase() !== user.username.toLowerCase()) {
+        const taken = await pool.query(
+          "SELECT id FROM users WHERE LOWER(username) = LOWER($1) AND id <> $2",
+          [next, user.id],
+        );
+        if (taken.rowCount) {
+          res.status(409).json({ error: "Username is already taken" });
+          return;
+        }
+      }
+      username = next;
+    }
+
+    let bio = user.bio ?? "";
+    if (req.body?.bio !== undefined) {
+      const next = typeof req.body.bio === "string" ? req.body.bio.trim() : "";
+      if (next.length > MAX_BIO) {
+        res.status(400).json({ error: `Bio must be at most ${MAX_BIO} characters` });
+        return;
+      }
+      bio = next;
+    }
+
+    const avatar = parseOptionalImage(req.body?.avatar, "Avatar", MAX_AVATAR_CHARS);
+    const banner = parseOptionalImage(req.body?.banner, "Banner", MAX_BANNER_CHARS);
+
+    const nextAvatar = avatar === undefined ? user.avatar : avatar;
+    const nextBanner = banner === undefined ? user.banner : banner;
+
+    const updated = await pool.query<UserRow>(
+      `UPDATE users
+       SET username = $1, bio = $2, avatar = $3, banner = $4
+       WHERE id = $5
+       RETURNING *`,
+      [username, bio, nextAvatar, nextBanner, user.id],
+    );
+
+    res.json({ user: publicUser(updated.rows[0]!) });
+  } catch (err) {
+    const status = (err as { status?: number }).status;
+    if (status === 400) {
+      res.status(400).json({ error: (err as Error).message });
+      return;
+    }
+    throw err;
+  }
 });
