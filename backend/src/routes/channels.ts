@@ -12,6 +12,7 @@ interface MessageRow {
   created_at: Date;
   user_id: number;
   username: string;
+  avatar: string | null;
 }
 
 function toMessage(row: MessageRow) {
@@ -20,7 +21,7 @@ function toMessage(row: MessageRow) {
     channelId: row.channel_id,
     content: row.content,
     createdAt: row.created_at,
-    author: { id: row.user_id, username: row.username },
+    author: { id: row.user_id, username: row.username, avatar: row.avatar ?? null },
   };
 }
 
@@ -45,7 +46,7 @@ channelsRouter.get("/:channelId/messages", async (req, res) => {
 
   const result = await pool.query<MessageRow>(
     `SELECT * FROM (
-       SELECT m.id, m.channel_id, m.content, m.created_at, u.id AS user_id, u.username
+       SELECT m.id, m.channel_id, m.content, m.created_at, u.id AS user_id, u.username, u.avatar
        FROM messages m JOIN users u ON u.id = m.user_id
        WHERE m.channel_id = $1
        ORDER BY m.id DESC
@@ -68,7 +69,7 @@ channelsRouter.post("/:channelId/messages", async (req, res) => {
     `WITH inserted AS (
        INSERT INTO messages (channel_id, user_id, content) VALUES ($1, $2, $3) RETURNING *
      )
-     SELECT i.id, i.channel_id, i.content, i.created_at, u.id AS user_id, u.username
+     SELECT i.id, i.channel_id, i.content, i.created_at, u.id AS user_id, u.username, u.avatar
      FROM inserted i JOIN users u ON u.id = i.user_id`,
     [channelId, userId, content],
   );

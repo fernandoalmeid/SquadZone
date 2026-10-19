@@ -10,6 +10,7 @@ interface FriendshipRow {
   status: "pending" | "accepted";
   id: number;
   username: string;
+  avatar: string | null;
 }
 
 export const friendsRouter = Router();
@@ -26,7 +27,7 @@ friendsRouter.get("/", async (_req, res) => {
   const me: number = res.locals.userId;
 
   const result = await pool.query<FriendshipRow>(
-    `SELECT f.requester_id, f.addressee_id, f.status, u.id, u.username
+    `SELECT f.requester_id, f.addressee_id, f.status, u.id, u.username, u.avatar
      FROM friendships f
      JOIN users u ON u.id = CASE WHEN f.requester_id = $1 THEN f.addressee_id ELSE f.requester_id END
      WHERE f.requester_id = $1 OR f.addressee_id = $1
@@ -34,7 +35,11 @@ friendsRouter.get("/", async (_req, res) => {
     [me],
   );
 
-  const toUser = (row: FriendshipRow) => ({ id: row.id, username: row.username });
+  const toUser = (row: FriendshipRow) => ({
+    id: row.id,
+    username: row.username,
+    avatar: row.avatar ?? null,
+  });
 
   res.json({
     friends: result.rows.filter((row) => row.status === "accepted").map(toUser),
