@@ -1,0 +1,346 @@
+/* Discord-style full-window user settings */
+.sz-settings-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  background: rgba(8, 5, 28, 0.88);
+  backdrop-filter: blur(8px);
+}
+
+.sz-settings-window {
+  display: flex;
+  width: min(1100px, 100vw);
+  height: min(760px, 100vh);
+  margin: auto;
+  overflow: hidden;
+  border: 1px solid var(--sz-line);
+  border-radius: 12px;
+  background: var(--sz-panel);
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.6);
+}
+
+.sz-settings-sidebar {
+  display: flex;
+  flex-direction: column;
+  width: 240px;
+  flex-shrink: 0;
+  padding: 16px 12px 20px;
+  overflow-y: auto;
+  background: var(--sz-deep);
+  border-right: 1px solid var(--sz-line);
+}
+
+.sz-settings-user-chip {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 4px 4px 18px;
+  padding: 10px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.sz-settings-user-chip strong {
+  display: block;
+  font-size: 0.95rem;
+}
+
+.sz-settings-user-chip span {
+  color: var(--sz-muted);
+  font-size: 0.75rem;
+}
+
+.sz-settings-nav-group {
+  margin-bottom: 14px;
+}
+
+.sz-settings-nav-label {
+  margin: 0 10px 6px;
+  color: var(--sz-muted);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.sz-settings-nav-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 9px 12px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--sz-muted);
+  font: inherit;
+  font-size: 0.92rem;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+}
+
+.sz-settings-nav-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--sz-text);
+}
+
+.sz-settings-nav-item.active {
+  background: rgba(139, 127, 214, 0.28);
+  color: #fff;
+}
+
+.sz-settings-nav-item.danger {
+  color: #ffb3c1;
+}
+
+.sz-settings-nav-item.danger:hover {
+  background: rgba(239, 111, 134, 0.2);
+  color: #fff;
+}
+
+.sz-settings-main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  background: var(--sz-surface);
+}
+
+.sz-settings-main-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  padding: 20px 28px 12px;
+  border-bottom: 1px solid var(--sz-line);
+}
+
+.sz-settings-main-header h2 {
+  margin: 0;
+  font-size: 1.35rem;
+}
+
+.sz-settings-close {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 8px 10px;
+  border: 1.5px solid var(--sz-line);
+  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+  justify-content: center;
+  background: transparent;
+  color: var(--sz-muted);
+  cursor: pointer;
+  font-size: 0.62rem;
+  font-weight: 600;
+}
+
+.sz-settings-close:hover {
+  border-color: var(--sz-mist);
+  color: var(--sz-text);
+}
+
+.sz-settings-main-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 28px 28px;
+}
+
+.sz-settings-card {
+  margin-bottom: 16px;
+  padding: 18px;
+  border: 1px solid var(--sz-line);
+  border-radius: 12px;
+  background: var(--sz-panel);
+}
+
+.sz-settings-card-title {
+  margin: 0 0 14px;
+  color: var(--sz-muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.sz-settings-account-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.sz-settings-account-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-start;
+}
+
+.sz-settings-account-meta strong {
+  font-size: 1.15rem;
+}
+
+.sz-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: relative;
+}
+
+.sz-field > span:first-child {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--sz-muted);
+}
+
+.sz-field input,
+.sz-field textarea,
+.sz-field select,
+.sz-url-row input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid var(--sz-line);
+  border-radius: 10px;
+  background: var(--sz-deep);
+  color: var(--sz-text);
+  font: inherit;
+  outline: none;
+}
+
+.sz-field textarea {
+  resize: vertical;
+}
+
+.sz-field input:focus,
+.sz-field textarea:focus,
+.sz-field select:focus,
+.sz-url-row input:focus {
+  border-color: var(--sz-lilac);
+}
+
+.sz-field input:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.sz-field-count {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  font-size: 0.72rem;
+  color: var(--sz-muted);
+}
+
+.sz-help {
+  margin: 0 0 10px;
+}
+
+.sz-url-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.sz-url-row input {
+  flex: 1 1 220px;
+  min-width: 0;
+}
+
+.sz-profile-preview {
+  overflow: hidden;
+  border-radius: 12px;
+  border: 1px solid var(--sz-line);
+  background: var(--sz-deep);
+}
+
+.sz-profile-banner {
+  height: 120px;
+  background: linear-gradient(135deg, var(--sz-violet) 0%, var(--sz-deep) 55%, #3a2a8a 100%);
+  background-size: cover;
+  background-position: center;
+}
+
+.sz-profile-body {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  margin-top: -40px;
+  padding: 0 16px 16px;
+}
+
+.sz-profile-body .avatar {
+  border: 6px solid var(--sz-deep);
+  box-sizing: content-box;
+}
+
+.sz-profile-body strong {
+  display: block;
+  font-size: 1.2rem;
+}
+
+.sz-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 8px 0;
+  cursor: pointer;
+}
+
+.sz-toggle-row + .sz-toggle-row {
+  border-top: 1px solid var(--sz-line);
+  margin-top: 4px;
+  padding-top: 12px;
+}
+
+.sz-toggle-row input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  accent-color: var(--sz-violet);
+  cursor: pointer;
+}
+
+.sz-settings-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.sz-saved {
+  color: var(--sz-meadow);
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.form-error {
+  margin: 0 0 8px;
+  color: var(--sz-danger);
+  font-size: 0.88rem;
+}
+
+@media (max-width: 800px) {
+  .sz-settings-window {
+    flex-direction: column;
+    width: 100vw;
+    height: 100vh;
+    border-radius: 0;
+  }
+
+  .sz-settings-sidebar {
+    width: 100%;
+    max-height: 40vh;
+    border-right: none;
+    border-bottom: 1px solid var(--sz-line);
+  }
+}
