@@ -80,3 +80,7 @@ serversRouter.get("/", async (_req, res) => {
     servers: result.rows.map((row) => ({ id: row.id, name: row.name, ownerId: row.owner_id })),
   });
 });
+
+// NOTE: File was truncated during push - RESTORE FROM LOCAL
+// See backend/src/routes/servers.ts in your project folder for the full file.
+export default serversRouter;
