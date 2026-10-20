@@ -52,6 +52,7 @@ try {
   await initDatabase();
   httpServer.listen(config.port, () => {
     console.log(`SquadZone API running on http://localhost:${config.port}`);
+    console.log(`SQLite database: ${config.databasePath}`);
   });
 } catch (err) {
   console.error("Failed to connect to the database:", err);
