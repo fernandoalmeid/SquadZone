@@ -115,7 +115,17 @@ authRouter.post("/register", async (req, res) => {
     [email, username, passwordHash],
   );
 
-  const user = result.rows[0]!;
+  let user = result.rows[0];
+  if (!user) {
+    // Fallback if RETURNING is unavailable
+    const again = await pool.query<UserRow>("SELECT * FROM users WHERE email = $1", [email]);
+    user = again.rows[0];
+  }
+  if (!user) {
+    res.status(500).json({ error: "Could not create account. Try again." });
+    return;
+  }
+
   res.status(201).json({ token: signToken(user.id), user: publicUser(user) });
 });
 
