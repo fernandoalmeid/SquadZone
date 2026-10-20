@@ -4,6 +4,7 @@ import { useAuth } from "../../hooks/useAuth.ts";
 import { errorMessage } from "../../utils/format.ts";
 import Avatar from "../ui/Avatar.tsx";
 import Icon from "../ui/Icon.tsx";
+import { isHttpUrl, readFileAsDataUrl } from "../../utils/profileImage.ts";
 
 const AVATAR_MAX = 2 * 1024 * 1024;
 const BANNER_MAX = 4 * 1024 * 1024;
@@ -17,27 +18,6 @@ type Section =
   | "voice"
   | "appearance"
   | "language";
-
-function readFileAsDataUrl(file: File, maxBytes: number): Promise<string> {
-  return new Promise((resolve, reject) => {
-    if (!file.type.match(/^image\/(png|jpe?g|gif|webp)$/i)) {
-      reject(new Error("Use PNG, JPEG, GIF or WebP"));
-      return;
-    }
-    if (file.size > maxBytes) {
-      reject(new Error(`Image must be under ${Math.round(maxBytes / 1024 / 1024)}MB`));
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = () => resolve(String(reader.result));
-    reader.onerror = () => reject(new Error("Could not read file"));
-    reader.readAsDataURL(file);
-  });
-}
-
-function isHttpUrl(value: string): boolean {
-  return /^https?:\/\//i.test(value.trim());
-}
 
 interface UserSettingsModalProps {
   onClose: () => void;
@@ -171,7 +151,7 @@ function UserSettingsModal({ onClose }: UserSettingsModalProps) {
   const onPickBanner = async (file: File | undefined) => {
     if (!file) return;
     try {
-      const data = await readFileAsDataUrl(file, BANNER_MAX);
+      const data = await readFileAsDataUrl(file, BANNER_MAX, 1280);
       setBanner(data);
       setBannerUrlDraft("");
       setBannerChanged(true);
@@ -187,13 +167,47 @@ function UserSettingsModal({ onClose }: UserSettingsModalProps) {
     setBusy(true);
     setError(null);
     setSaved(false);
+
+    let nextAvatar = avatar;
+    let nextBanner = banner;
+    let sendAvatar = avatarChanged;
+    let sendBanner = bannerChanged;
+
+    const avatarDraft = avatarUrlDraft.trim();
+    if (avatarDraft) {
+      if (!isHttpUrl(avatarDraft)) {
+        setError("Avatar URL must start with http:// or https://");
+        setBusy(false);
+        return;
+      }
+      nextAvatar = avatarDraft;
+      sendAvatar = true;
+    }
+
+    const bannerDraft = bannerUrlDraft.trim();
+    if (bannerDraft) {
+      if (!isHttpUrl(bannerDraft)) {
+        setError("Banner URL must start with http:// or https://");
+        setBusy(false);
+        return;
+      }
+      nextBanner = bannerDraft;
+      sendBanner = true;
+    }
+
     try {
-      await updateUser({
+      const updated = await updateUser({
         username: username.trim(),
         bio: bio.trim(),
-        ...(avatarChanged ? { avatar } : {}),
-        ...(bannerChanged ? { banner } : {}),
+        ...(sendAvatar ? { avatar: nextAvatar } : {}),
+        ...(sendBanner ? { banner: nextBanner } : {}),
       });
+      setAvatar(updated.avatar);
+      setBanner(updated.banner);
+      setBio(updated.bio ?? "");
+      setUsername(updated.username);
+      setAvatarUrlDraft(updated.avatar && isHttpUrl(updated.avatar) ? updated.avatar : "");
+      setBannerUrlDraft(updated.banner && isHttpUrl(updated.banner) ? updated.banner : "");
       setAvatarChanged(false);
       setBannerChanged(false);
       setSaved(true);
@@ -344,7 +358,7 @@ function UserSettingsModal({ onClose }: UserSettingsModalProps) {
 
                 <SettingsCard title="Avatar">
                   <p className="muted small sz-help">
-                    Upload a file or paste a direct image/GIF URL (Giphy, Tenor, Imgur…).
+                    Upload a file or paste a direct image/GIF URL, then click Save Changes.
                   </p>
                   <div className="sz-url-row">
                     <input
@@ -386,7 +400,7 @@ function UserSettingsModal({ onClose }: UserSettingsModalProps) {
                 </SettingsCard>
 
                 <SettingsCard title="Banner">
-                  <p className="muted small sz-help">Same options — file or a web GIF/image link.</p>
+                  <p className="muted small sz-help">Same options — file or a web GIF/image link, then Save.</p>
                   <div className="sz-url-row">
                     <input
                       value={bannerUrlDraft}
