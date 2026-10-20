@@ -53,8 +53,13 @@ function UserPanel() {
         <button
           type="button"
           className="user-panel-identity"
-          onClick={() => setSettingsOpen(true)}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setSettingsOpen(true);
+          }}
           title="User settings"
+          aria-label="Open user settings"
         >
           <Avatar id={user.id} name={user.username} size={34} status="online" src={user.avatar} />
           <div className="user-panel-name">
@@ -81,8 +86,13 @@ function UserPanel() {
         <button
           type="button"
           className="icon-btn"
-          onClick={() => setSettingsOpen(true)}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setSettingsOpen(true);
+          }}
           title="User settings"
+          aria-label="User settings"
         >
           <Icon name="gear" />
         </button>
