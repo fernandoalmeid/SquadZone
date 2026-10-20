@@ -344,3 +344,37 @@
     border-bottom: 1px solid var(--sz-line);
   }
 }
+
+/* User panel identity (gear / profile click target) */
+.user-panel-identity {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  min-width: 0;
+  margin: 0;
+  padding: 4px 6px 4px 2px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+.user-panel-identity:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.avatar img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+
+.avatar {
+  overflow: visible;
+}
