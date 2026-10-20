@@ -1,4 +1,4 @@
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { Router } from "express";
 import { pool } from "../db.js";
 import { requireAuth, signToken } from "../middleware/auth.js";
@@ -120,23 +120,34 @@ authRouter.post("/register", async (req, res) => {
 });
 
 authRouter.post("/login", async (req, res) => {
-  const email = asString(req.body?.email).toLowerCase();
-  const password = typeof req.body?.password === "string" ? req.body.password : "";
+  try {
+    const email = asString(req.body?.email).toLowerCase();
+    const password = typeof req.body?.password === "string" ? req.body.password : "";
 
-  if (!email || !password) {
-    res.status(400).json({ error: "Email and password are required" });
-    return;
+    if (!email || !password) {
+      res.status(400).json({ error: "Email and password are required" });
+      return;
+    }
+
+    const result = await pool.query<UserRow>("SELECT * FROM users WHERE email = $1", [email]);
+    const user = result.rows[0];
+
+    if (!user?.password_hash) {
+      res.status(401).json({ error: "Invalid email or password" });
+      return;
+    }
+
+    const ok = await bcrypt.compare(password, user.password_hash);
+    if (!ok) {
+      res.status(401).json({ error: "Invalid email or password" });
+      return;
+    }
+
+    res.json({ token: signToken(user.id), user: publicUser(user) });
+  } catch (err) {
+    console.error("Login error:", err);
+    res.status(500).json({ error: "Login failed. Check that the backend is running." });
   }
-
-  const result = await pool.query<UserRow>("SELECT * FROM users WHERE email = $1", [email]);
-  const user = result.rows[0];
-
-  if (!user || !(await bcrypt.compare(password, user.password_hash))) {
-    res.status(401).json({ error: "Invalid email or password" });
-    return;
-  }
-
-  res.json({ token: signToken(user.id), user: publicUser(user) });
 });
 
 authRouter.get("/me", requireAuth, async (_req, res) => {
