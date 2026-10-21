@@ -11,6 +11,23 @@ import ServerRail from "./ServerRail.tsx";
 
 function AppShell() {
   const { socket, syncPresence } = useSocket();
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("squadzone_appearance");
+      if (!raw) return;
+      const data = JSON.parse(raw) as { mode?: string; color?: string; image?: string | null; dim?: number };
+      const root = document.querySelector(".app") as HTMLElement | null;
+      if (!root || !data.mode || data.mode === "default") return;
+      root.classList.add("has-custom-bg");
+      if (data.color) root.style.setProperty("--sz-custom-bg-color", data.color);
+      if (data.image) root.style.setProperty("--sz-custom-bg-image", `url(${data.image})`);
+      if (typeof data.dim === "number") root.style.setProperty("--sz-custom-bg-dim", String(data.dim / 100));
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
   const [servers, setServers] = useState<ServerSummary[]>([]);
   const [showCreate, setShowCreate] = useState(false);
 
