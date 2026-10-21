@@ -1,4 +1,4 @@
-import type { FriendsData, Message, ServerDetails, ServerSummary } from "../types/app.ts";
+import type { DmChannel, FriendsData, Message, ServerDetails, ServerSummary } from "../types/app.ts";
 import { apiRequest } from "./client.ts";
 
 function json(method: string, body?: unknown): RequestInit {
@@ -79,4 +79,14 @@ export const messagesApi = {
       `/channels/${channelId}/messages`,
       json("POST", { content }),
     ),
+};
+
+export const dmsApi = {
+  list: () => apiRequest<{ channels: DmChannel[] }>("/dms"),
+  open: (userId: number) =>
+    apiRequest<{ channel: DmChannel }>("/dms/open", json("POST", { userId })),
+  messages: (channelId: number) =>
+    apiRequest<{ messages: Message[] }>(`/dms/${channelId}/messages`),
+  send: (channelId: number, content: string) =>
+    apiRequest<{ message: Message }>(`/dms/${channelId}/messages`, json("POST", { content })),
 };
