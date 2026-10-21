@@ -7,6 +7,7 @@ import { initSocket } from "./realtime/socket.js";
 import { authRouter } from "./routes/auth.js";
 import { channelsRouter } from "./routes/channels.js";
 import { friendsRouter } from "./routes/friends.js";
+import { dmsRouter } from "./routes/dms.js";
 import { serversRouter } from "./routes/servers.js";
 import { HttpError } from "./utils/http.js";
 
@@ -21,6 +22,7 @@ app.get("/api/health", (_req, res) => {
 
 app.use("/api/auth", authRouter);
 app.use("/api/friends", friendsRouter);
+app.use("/api/dms", dmsRouter);
 app.use("/api/servers", serversRouter);
 app.use("/api/channels", channelsRouter);
 
