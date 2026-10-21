@@ -85,3 +85,23 @@ CREATE TABLE IF NOT EXISTS messages (
 );
 
 CREATE INDEX IF NOT EXISTS messages_channel_idx ON messages (channel_id, id);
+
+
+CREATE TABLE IF NOT EXISTS dm_channels (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_a_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    user_b_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    UNIQUE (user_a_id, user_b_id),
+    CHECK (user_a_id < user_b_id)
+);
+
+CREATE TABLE IF NOT EXISTS dm_messages (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    channel_id INTEGER NOT NULL REFERENCES dm_channels(id) ON DELETE CASCADE,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    content TEXT NOT NULL,
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE INDEX IF NOT EXISTS dm_messages_channel_idx ON dm_messages (channel_id, id);
