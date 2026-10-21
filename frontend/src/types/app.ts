@@ -2,6 +2,13 @@ export interface BasicUser {
   id: number;
   username: string;
   avatar?: string | null;
+  banner?: string | null;
+  bio?: string;
+}
+
+export interface DmChannel {
+  id: number;
+  peer: BasicUser;
 }
 
 export interface FriendsData {
