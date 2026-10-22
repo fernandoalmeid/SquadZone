@@ -185,7 +185,12 @@ function Friends() {
 
   const run = async (action: () => Promise<unknown>) => {
     setActionError("");
-    try { await action(); } catch (err) { setActionError(errorMessage(err)); }
+    try {
+      await action();
+      await refresh();
+    } catch (err) {
+      setActionError(errorMessage(err));
+    }
   };
 
   const openDm = async (user: BasicUser) => {
