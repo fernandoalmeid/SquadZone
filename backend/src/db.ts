@@ -17,22 +17,29 @@ export interface QueryResult<T = Record<string, unknown>> {
 
 type SqlParams = unknown[] | undefined;
 
-/** Convert Postgres-style $1, $2 placeholders to SQLite ? placeholders. */
-function toSqliteSql(sql: string): string {
-  return sql.replace(/\$(\d+)/g, "?");
-}
-
-function normalizeParams(params: SqlParams): unknown[] {
-  if (!params) return [];
-  return params.map((value) => {
-    if (typeof value === "boolean") return value ? 1 : 0;
-    return value;
+/**
+ * Convert Postgres-style $1, $2 placeholders to SQLite `?`.
+ * Each $N is expanded to its own `?` and the matching param is repeated,
+ * so queries that reuse `$1` multiple times work correctly.
+ */
+function convertSql(sql: string, params?: SqlParams): { sql: string; params: unknown[] } {
+  const source = params ?? [];
+  const bound: unknown[] = [];
+  const converted = sql.replace(/\$(\d+)/g, (_match, num: string) => {
+    const index = Number(num) - 1;
+    if (index < 0 || index >= source.length) {
+      throw new Error(`SQL placeholder $${num} has no matching parameter (got ${source.length})`);
+    }
+    let value = source[index];
+    if (typeof value === "boolean") value = value ? 1 : 0;
+    bound.push(value);
+    return "?";
   });
+  return { sql: converted, params: bound };
 }
 
 function runQuery<T>(sql: string, params?: SqlParams): QueryResult<T> {
-  const sqliteSql = toSqliteSql(sql);
-  const bound = normalizeParams(params);
+  const { sql: sqliteSql, params: bound } = convertSql(sql, params);
   const upper = sqliteSql.trim().toUpperCase();
   const returnsRows =
     upper.startsWith("SELECT") ||

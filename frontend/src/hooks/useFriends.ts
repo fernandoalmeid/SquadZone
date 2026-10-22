@@ -9,12 +9,16 @@ export function useFriends() {
   const { socket, syncPresence } = useSocket();
   const [data, setData] = useState<FriendsData>(EMPTY);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   const refresh = useCallback(async () => {
     try {
       const result = await friendsApi.list();
       setData(result);
+      setError("");
       syncPresence();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to load friends");
     } finally {
       setLoading(false);
     }
@@ -33,5 +37,5 @@ export function useFriends() {
     };
   }, [socket, refresh]);
 
-  return { ...data, loading, refresh };
+  return { ...data, loading, error, refresh };
 }

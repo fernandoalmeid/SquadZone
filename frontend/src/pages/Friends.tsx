@@ -11,7 +11,7 @@ import { errorMessage, formatTime } from "../utils/format.ts";
 
 type Tab = "online" | "all" | "pending" | "add";
 
-function AddFriend() {
+function AddFriend({ onSent }: { onSent?: () => void }) {
   const [username, setUsername] = useState("");
   const [result, setResult] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [busy, setBusy] = useState(false);
@@ -30,6 +30,7 @@ function AddFriend() {
             : `Friend request sent to ${response.username}.`,
       });
       setUsername("");
+      onSent?.();
     } catch (err) {
       setResult({ type: "error", text: errorMessage(err) });
     } finally {
@@ -169,7 +170,7 @@ function DmView({ channel, online, onBack }: { channel: DmChannel; online: boole
 }
 
 function Friends() {
-  const { friends, incoming, outgoing, loading } = useFriends();
+  const { friends, incoming, outgoing, loading, error: loadError, refresh } = useFriends();
   const { online } = useSocket();
   const [tab, setTab] = useState<Tab>("online");
   const [search, setSearch] = useState("");
@@ -218,7 +219,7 @@ function Friends() {
   );
 
   const renderList = () => {
-    if (tab === "add") return <AddFriend />;
+    if (tab === "add") return <AddFriend onSent={() => void refresh()} />;
     if (loading) return <p className="empty-state">Loading friends…</p>;
     if (tab === "pending") {
       const incomingList = incoming.filter(matches);
@@ -339,6 +340,7 @@ function Friends() {
           {tab !== "add" && (incoming.length + outgoing.length > 0 || friends.length > 0) && (
             <label className="search"><Icon name="search" /><input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search" /></label>
           )}
+          {loadError && <p className="alert error">{loadError}</p>}
           {actionError && <p className="alert error">{actionError}</p>}
           {renderList()}
         </div>
