@@ -1,8 +1,12 @@
 # SquadZone
 
-Discord-style communication app with a purple SquadZone theme.
+**Discord-style communication app** built with TypeScript.
 
-Built with TypeScript, real-time messaging, and voice channels.
+Create servers, chat in real time, manage roles and categories, and join voice channels with screen sharing — all with a purple SquadZone theme.
+
+Perfect for learning full-stack development: authentication, WebSockets, permissions, and WebRTC.
+
+---
 
 ## Features
 
